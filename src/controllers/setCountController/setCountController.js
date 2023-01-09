@@ -36,7 +36,7 @@ const counter = (payloadData, callback) => {
 		optInStatusCheck: (cb) =>{
 			checkOptIn(algoClient, customers, appIndex, cb);
 		},
-		createAndSignTxn: (cb) => {
+		createSignAndSendTxn: (cb) => {
 			createSignSendTransactionLocalState(algoClient, account, appIndex, transaction, operation, parameters, customers, cb);
 		},
 
