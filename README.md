@@ -10,6 +10,8 @@ There are also other baas services that we have developed, they are forks of thi
 
 - [Mint NFT](https://github.com/deakin-launchpad/baas-service-mintNFT)
 
+- [Local Counter](https://github.com/deakin-launchpad/baas-service-localCounter)
+
 There will be many more to come!
 
 ## Pre-requisite

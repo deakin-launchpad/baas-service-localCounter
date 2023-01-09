@@ -5,7 +5,7 @@ const Config = UniversalFunctions.CONFIG;
 
 const setCountRoute = {
 	method: "POST",
-	path: "/api/demo/counter",
+	path: "/api/demo/local_counter",
 	options: {
 		description: "demo api",
 		tags: ["api"],
@@ -24,7 +24,13 @@ const setCountRoute = {
 				datashopServerAddress: Joi.string(),
 				dataFileURL: Joi.object({
 					url: Joi.any(),
-					json: Joi.any(),
+					json: Joi.object(
+						{
+							myAccount: Joi.string().required(),
+							operation: Joi.string().required(),
+							number: Joi.number().required()
+						}
+					),
 				}),
 			}).label("Demo Model"),
 			failAction: UniversalFunctions.failActionFunction,

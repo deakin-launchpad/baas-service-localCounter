@@ -1,21 +1,23 @@
 import async from "async";
 import UniversalFunctions from "../../utils/universalFunctions.js";
 const ERROR = UniversalFunctions.CONFIG.APP_CONSTANTS.STATUS_MSG.ERROR;
-import { connectToAlgorand, getBlockchainAccount, createAndSignTransaction, sendTransaction, respondToServer } from "../../helpers/helperFunctions.js";
+import { connectToAlgorand, getBlockchainAccount, checkOptIn,createSignSendTransactionLocalState, respondToServer } from "../../helpers/helperFunctions.js";
 
 /**
  * @param {Object} payloadData
- * @param {String} payloadData.numberToSet
+ * @param {String} payloadData.operation 
  * @param {Function} callback
  */
 const counter = (payloadData, callback) => {
-	let data = JSON.parse(payloadData.dataFileURL.json);
-	let algoClient;
+	const data = payloadData.dataFileURL.json;
+	const customers = [data.myAccount];
+	const operation = data.operation;
+	const parameters = [data.number];
 	let account;
+	let algoClient;
 	let transaction;
-	let signedTx;
-	let txnId;
 
+	const appIndex = 149326844;
 	const tasks = {
 		connectToBlockchain: (cb) => {
 			algoClient = connectToAlgorand("", "https://testnet-api.algonode.cloud", 443);
@@ -27,12 +29,17 @@ const counter = (payloadData, callback) => {
 			if (!account) return cb(ERROR.APP_ERROR);
 			cb();
 		},
-		createAndSignTxn: async (cb) => {
-			signedTx = await createAndSignTransaction(algoClient, account, transaction, data, signedTx, cb);
+		checkAdditionalAddress: (cb) =>{
+			if (!customers) return cb(ERROR.APP_ERROR);
+			cb(); 
 		},
-		sendTxn: (cb) => {
-			sendTransaction(algoClient, signedTx, txnId, cb);
+		optInStatusCheck: (cb) =>{
+			checkOptIn(algoClient, customers, appIndex, cb);
 		},
+		createAndSignTxn: (cb) => {
+			createSignSendTransactionLocalState(algoClient, account, appIndex, transaction, operation, parameters, customers, cb);
+		},
+
 		response: (cb) => {
 			respondToServer(payloadData, cb);
 		},
